@@ -14,12 +14,21 @@ Promise.resolve()
 // ROUTES
 app.get('/films/:id/recommendations', getFilmRecommendations);
 
+//connect to db
+const DB = new Sequelize(`sqlite:${process.env.DB_PATH}`);
+//test connection (http://docs.sequelizejs.com/manual/installation/getting-started.html)
+DB
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
+
 // ROUTE HANDLER
 function getFilmRecommendations(req, res) {
-  // connect to database using DB_PATH and Sequelize
-  const DB = new Sequelize('sqlite:./db/database.db');
-
-
+  
   // get films from database with same genre, released within 15 years sorted by film id
   /* SQLite query within DB
   
