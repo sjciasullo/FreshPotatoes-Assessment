@@ -12,7 +12,11 @@ Promise.resolve()
   .catch((err) => { if (NODE_ENV === 'development') console.error(err.stack); });
 
 // CONNECT TO DB
-const DB = new Sequelize(`sqlite:${process.env.DB_PATH}`);
+const DB = new Sequelize('database', null, null, {
+  dialect: 'sqlite',
+  storage: 'db/database.db'
+})
+
 // TEST CONNECTION (http://docs.sequelizejs.com/manual/installation/getting-started.html)
 DB
   .authenticate()
@@ -22,28 +26,9 @@ DB
   .catch(err => {
     console.error('Unable to connect to the database:', err);
   });
-// DB models
-// const films = DB.define('films');
-// films.sync().then(() => {
-//   films.all().then(films => {
-//     console.log(films);
-//   })
-// }).catch(err => {
-//   console.log(err);
-//   console.log('db doesnot sync');
-// })
-DB.sync();
-
-// films.all().then(films=> {
-//   console.log(films);
-// })
-
-
 
 // ROUTES
 app.get('/films/:id/recommendations', getFilmRecommendations);
-
-
 
 // ROUTE HANDLER
 function getFilmRecommendations(req, res) {
