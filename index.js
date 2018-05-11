@@ -48,9 +48,7 @@ function getFilmRecommendations(req, res) {
     ORDER BY films.id ASC;`,
     { bind: [req.params.id], type: DB.QueryTypes.SELECT}
   ).then(films => {
-    console.log(films); // check films accurately retrieved
     // make outside api call with string of movie_id's
-    
     if(films.length != 0){
       const OUTSIDE_API = 'http://credentials-api.generalassemb.ly/4576f55f-c427-4cfc-a11c-5bfe914ca6c1';
       let url = OUTSIDE_API + '?films=' + films[0].id;
@@ -90,8 +88,14 @@ function getFilmRecommendations(req, res) {
             }
           }
           console.log('recommendations: \n', films);
+          res.status(200).json({
+            recommendations: films,
+            meta: {
+              "limit": 10,
+              "offset": 0
+            }
+          })
         } else {
-          films = [];
           console.log('error: ' + response.statusCode);
           console.log(body);
         }
