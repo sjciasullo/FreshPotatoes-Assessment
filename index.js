@@ -30,6 +30,12 @@ DB
 // ROUTES
 app.get('/films/:id/recommendations', getFilmRecommendations);
 
+app.use('*', (req, res) => {
+  res.status(404).json({
+    message: 'Invalid Route',
+  });
+});
+
 // ROUTE HANDLER
 function getFilmRecommendations(req, res) {
   // get films from database with same genre, released within 15 years sorted by film id
