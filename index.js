@@ -106,7 +106,6 @@ function getFilmRecommendations(req, res) {
       message: err
     });
   })
-
 }
 
 module.exports = app;
