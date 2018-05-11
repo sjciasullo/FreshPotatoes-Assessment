@@ -87,12 +87,11 @@ function getFilmRecommendations(req, res) {
               films.splice(filmTracker, 1);
             }
           }
-          console.log('recommendations: \n', films);
           res.status(200).json({
             recommendations: films,
             meta: {
               "limit": 10,
-              "offset": 0
+              "offset": 1
             }
           })
         } else {
@@ -101,12 +100,11 @@ function getFilmRecommendations(req, res) {
         }
       })
     }
-
-    // check reviews from each film and pop from array if < 5 reviews and average rating <= 4.0
-    // by using outside api; save averageRating on object and reviews (num reviews) if good
   }).catch(err => {
     console.log(err);
-    res.status(500).send('Database error');
+    res.status(500).json({
+      message: err
+    });
   })
 
 }
