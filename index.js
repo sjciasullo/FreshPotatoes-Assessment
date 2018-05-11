@@ -49,6 +49,29 @@ function getFilmRecommendations(req, res) {
     { bind: [req.params.id], type: DB.QueryTypes.SELECT}
   ).then(films => {
     console.log(films); // check films accurately retrieved
+    // make outside api call with string of movie_id's
+    
+    if(films.length != 0){
+      const OUTSIDE_API = 'http://credentials-api.generalassemb.ly/4576f55f-c427-4cfc-a11c-5bfe914ca6c1';
+      let url = OUTSIDE_API + '?films=' + films[0].id;
+      for(let i = 1; i < films.length; i++){
+        url += `,${films[i].id}`
+      }
+
+      request({
+        method: 'GET',
+        uri: url
+      }, (error, response, body) => {
+        if(response.statusCode == 200){
+          console.log('correct retrieval of reviews \n' + body);
+        } else {
+          films = [];
+          console.log('error: ' + response.statusCode);
+          console.log(body);
+        }
+      })
+    }
+
     // check reviews from each film and pop from array if < 5 reviews and average rating <= 4.0
     // by using outside api; save averageRating on object and reviews (num reviews) if good
   }).catch(err => {
