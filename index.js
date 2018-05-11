@@ -63,7 +63,33 @@ function getFilmRecommendations(req, res) {
         uri: url
       }, (error, response, body) => {
         if(response.statusCode == 200){
-          console.log('correct retrieval of reviews \n' + body);
+          const PARSED_BODY = JSON.parse(body);
+          console.log('correct retrieval of reviews');
+
+          // check for num ratings >= 5 and avg rating >= 4.0
+          let filmTracker = 0;
+          for(let i = 0; i < PARSED_BODY.length; i++){
+            if(PARSED_BODY[i].reviews.length >= 5) {
+              let ratingSum = 0;
+              for(let j = 0; j < PARSED_BODY[i].reviews.length; j++){
+                ratingSum += PARSED_BODY[i].reviews[j].rating;
+              }
+              const RATING_AVG = ratingSum / PARSED_BODY[i].reviews.length;
+              if(RATING_AVG >= 4.0){
+                // if rating avg and total fit spec, add them to film object and increase tracker
+                films[filmTracker].averageRating = RATING_AVG;
+                films[filmTracker].reviews = PARSED_BODY[i].reviews.length;
+                filmTracker++;
+              } else {
+                // remove film that has poor average rating
+                films.splice(filmTracker, 1);
+              }
+            } else {
+              // remove film that has too few ratings
+              films.splice(filmTracker, 1);
+            }
+          }
+          console.log('recommendations: \n', films);
         } else {
           films = [];
           console.log('error: ' + response.statusCode);
