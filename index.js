@@ -88,8 +88,17 @@ function getFilmRecommendations(req, res) {
             }
           }
           
-          // handle limit processing
-          console.log('REQ query: ', req.query);
+          // HANDLE OFFSET PROCESSING
+          let offset = 0;
+          if(req.query.hasOwnProperty('offset')){
+            offset = parseInt(req.query.offset);
+          }
+          for(let i = 0; i < offset; i++){
+            films.shift();
+          }
+          
+
+          // HANDLE LIMIT PROCESSING
           let limit = 10;
           if(req.query.hasOwnProperty('limit')){
             limit = parseInt(req.query.limit);
@@ -102,7 +111,7 @@ function getFilmRecommendations(req, res) {
             recommendations: films,
             meta: {
               "limit": limit,
-              "offset": req.query.offset || 0
+              "offset": offset
             }
           })
         } else {
