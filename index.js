@@ -87,11 +87,22 @@ function getFilmRecommendations(req, res) {
               films.splice(filmTracker, 1);
             }
           }
+          
+          // handle limit processing
+          console.log('REQ query: ', req.query);
+          let limit = 10;
+          if(req.query.hasOwnProperty('limit')){
+            limit = parseInt(req.query.limit);
+          }
+          while(films.length > limit){
+            films.pop();
+          }
+
           res.status(200).json({
             recommendations: films,
             meta: {
-              "limit": 10,
-              "offset": 0
+              "limit": limit,
+              "offset": req.query.offset || 0
             }
           })
         } else {
