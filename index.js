@@ -75,7 +75,7 @@ function getFilmRecommendations(req, res) {
               const RATING_AVG = ratingSum / PARSED_BODY[i].reviews.length;
               if(RATING_AVG >= 4.0){
                 // if rating avg and total fit spec, add them to film object and increase tracker
-                films[filmTracker].averageRating = RATING_AVG;
+                films[filmTracker].averageRating = Math.round(RATING_AVG * 100) / 100;
                 films[filmTracker].reviews = PARSED_BODY[i].reviews.length;
                 filmTracker++;
               } else {
@@ -91,7 +91,7 @@ function getFilmRecommendations(req, res) {
             recommendations: films,
             meta: {
               "limit": 10,
-              "offset": 1
+              "offset": 0
             }
           })
         } else {
